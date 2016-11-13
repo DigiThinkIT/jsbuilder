@@ -1,0 +1,10 @@
+{
+  "var1": "{{ var1 }}",
+  "list": [
+    "first",
+    {%- for(var i = 0; i < this.loop_count; i++) { -%}
+    {{ i }},
+    {%- } -%}
+    "last"
+  ]
+}

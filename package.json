@@ -1,0 +1,27 @@
+{
+  "name": "jsbuilder",
+  "version": "0.1.0",
+  "description": "A simple js based html template",
+  "main": "main.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com:DigiThinkIT/jsbuilder.git"
+  },
+  "keywords": [
+    "template",
+    "javascript",
+    "html"
+  ],
+  "author": "Felipe Orellana <forellana@digithinkit.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DigiThinkIT/jsbuilder/issues"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.1.2"
+  }
+}
