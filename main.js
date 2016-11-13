@@ -83,11 +83,11 @@ class Builder {
     var dst_path = null;
 
     if ( process.argv.length > 2 ) {
-      src_path = process.argv[2];
+      src_path = path.resolve(process.argv[2]);
     }
 
     if ( process.argv.length > 3 ) {
-      dst_path = process.argv[3];
+      dst_path = path.resolve(process.argv[3]);
     }
 
     return new Builder(src_path, dst_path);
