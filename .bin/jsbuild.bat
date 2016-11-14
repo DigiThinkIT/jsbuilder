@@ -1,1 +1,1 @@
-node ../build.js %*
+node ../jsbuild.js %*
