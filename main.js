@@ -84,10 +84,14 @@ class Builder {
 
     if ( process.argv.length > 2 ) {
       src_path = path.resolve(process.argv[2]);
+    } else {
+      src_path = path.resolve(".");
     }
 
     if ( process.argv.length > 3 ) {
       dst_path = path.resolve(process.argv[3]);
+    } else {
+      dst_path = path.resolve(".");
     }
 
     return new Builder(src_path, dst_path);
