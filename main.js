@@ -1,5 +1,5 @@
 "use strict";
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 
 let __tplCounter = 0;
@@ -220,6 +220,8 @@ class Builder {
         }
 
         out = this._afterBuildItem(key, out);
+	var base_path = path.dirname(out_path);
+	fs.ensureDirSync(base_path);
         fs.writeFileSync(out_path, out);
       }
     }
