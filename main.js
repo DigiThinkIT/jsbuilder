@@ -1,4 +1,6 @@
 "use strict";
+/* ex: set tabstop=2 expandtab: */
+
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -97,6 +99,10 @@ class Builder {
     return new Builder(src_path, dst_path);
   }
 
+  static registerCommand(command, handler) {
+
+  }
+
   static registerHandler(prefix, handler) {
     // binding handler object to its functions so they may reference properties
     if ( handler.process ) { handler.process = handler.process.bind(handler); }
@@ -183,18 +189,23 @@ class Builder {
     if ( "build" in build ) {
       for(var key in build.build ) {
         var out_path = path.resolve(path.join(this.dst_path, key));
-        var items = build.build[key];
-        if ( items.constructor !== Array ) {
-          items = [items];
-        }
+	var item = {};
+	if ( typeof build.build[key] == "string" ) {
+		item.files = [ build.build[key] ];
+	} else if ( typeof build.build[key].constructor == 'array ) {
+		item.files = build.build[key];
+	} else {
+		item = build.build[key]
+	}
+
         this._beforeBuildItem(key);
         var out = "";
-        for(var item of items) {
+        for(var file of item.files) {
           var prefix = null;
-          var parts = item.split(":");
+          var parts = file.split(":");
           if ( parts.length > 1 ) {
             prefix = parts[0];
-            item = parts[1];
+            file = parts[1];
           }
 
           var handler = null;
@@ -212,12 +223,12 @@ class Builder {
 
           // let the * catch all process first
           if ( all_handler && all_handler.process ) {
-            data = all_handler.process(data, item, vars, item_path, out_path, this);
+            data = all_handler.process(data, file, vars, item_path, out_path, this);
           }
 
           // then all other handlers
           if ( handler && handler.process ) {
-            data = handler.process(data, item, vars, item_path, out_path, this);
+            data = handler.process(data, file, vars, item_path, out_path, this);
           }
 
           out += data + "\n";
@@ -227,10 +238,15 @@ class Builder {
 	var base_path = path.dirname(out_path);
 	fs.ensureDirSync(base_path);
         fs.writeFileSync(out_path, out);
+	
       }
     }
   }
 }
+
+Builder.registerCommand("chmod", (path, args) => {
+	fs.chmodSync(path, args[0]);
+});
 
 Builder.registerHandler("include_template", {
   count: 0,
