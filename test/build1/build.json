@@ -1,0 +1,12 @@
+{
+  "vars": {
+    "var1": "value1"
+  },
+  "build": {
+    "test_app.js": [
+      "include_template:../test_app.tpl",
+      "process_template:../test_app2.js",
+      "../test_app.js"
+    ]
+  }
+}
