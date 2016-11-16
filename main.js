@@ -1,5 +1,5 @@
 "use strict";
-/* ex: set tabstop=2 expandtab: */
+/* ex: set tabstop=2 shiftwidth=2 autoindent smartindent expandtab: */
 
 const fs = require('fs-extra');
 const path = require('path');
@@ -19,7 +19,7 @@ class Template {
     var fnName = "__tpl__" + __tplCounter;
 
     script.push("(function(__data__) { var __fn__ = (function() {\n");
-//    script.push("\twith(__data__) {");
+    //    script.push("\twith(__data__) {");
     script.push("\tvar tpl=[];\n");
     var open = false;
     var openMode = null;
@@ -127,11 +127,11 @@ class Builder {
         }
       }).bind(handler_api);
 
-      handler_api.process = (function(data, item, vars, item_path, out_path, builder) {
+      handler_api.process = (function(data, item, vars, file_path, out_path, builder) {
         for( var i in this.handlers ) {
           var handler = this.handlers[i];
           if ( 'process' in handler ) {
-            data = handler.process(data, item, vars, item_path, out_path, builder);
+            data = handler.process(data, item, vars, file_path, out_path, builder);
           }
         }
         return data;
@@ -189,18 +189,20 @@ class Builder {
     if ( "build" in build ) {
       for(var key in build.build ) {
         var out_path = path.resolve(path.join(this.dst_path, key));
-	var item = {};
-	if ( typeof build.build[key] == "string" ) {
-		item.files = [ build.build[key] ];
-	} else if ( typeof build.build[key].constructor == 'array' ) {
-		item.files = build.build[key];
-	} else {
-		item = build.build[key]
-	}
+        var item = {};
+
+        if ( typeof build.build[key] == "string" ) {
+          item.files = [ build.build[key] ];
+        } else if ( build.build[key].constructor == Array ) {
+          item.files = build.build[key];
+        } else {
+          item = build.build[key]
+        }
 
         this._beforeBuildItem(key);
         var out = "";
-        for(var file of item.files) {
+        for(var i in item.files) {
+          var file = item.files[i];
           var prefix = null;
           var parts = file.split(":");
           if ( parts.length > 1 ) {
@@ -218,25 +220,25 @@ class Builder {
             all_handler = __build_handlers["*"];
           }
 
-          var item_path = path.resolve(this.src_path, item);
-          var data = fs.readFileSync(item_path).toString();
+          var file_path = path.resolve(path.join(this.src_path, file));
+          var data = fs.readFileSync(file_path).toString();
 
           // let the * catch all process first
           if ( all_handler && all_handler.process ) {
-            data = all_handler.process(data, file, vars, item_path, out_path, this);
+            data = all_handler.process(data, file, vars, file_path, out_path, this);
           }
 
           // then all other handlers
           if ( handler && handler.process ) {
-            data = handler.process(data, file, vars, item_path, out_path, this);
+            data = handler.process(data, file, vars, file_path, out_path, this);
           }
 
           out += data + "\n";
         }
 
         out = this._afterBuildItem(key, out);
-	var base_path = path.dirname(out_path);
-	fs.ensureDirSync(base_path);
+      	var base_path = path.dirname(out_path);
+    	  fs.ensureDirSync(base_path);
         fs.writeFileSync(out_path, out);
 	
       }
@@ -244,7 +246,7 @@ class Builder {
   }
 }
 
-Builder.registerCommand("chmod", (path, args) => {
+Builder.registerCommand("chmod", function(path, args) {
 	fs.chmodSync(path, args[0]);
 });
 
