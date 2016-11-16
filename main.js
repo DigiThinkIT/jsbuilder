@@ -192,7 +192,7 @@ class Builder {
 	var item = {};
 	if ( typeof build.build[key] == "string" ) {
 		item.files = [ build.build[key] ];
-	} else if ( typeof build.build[key].constructor == 'array ) {
+	} else if ( typeof build.build[key].constructor == 'array' ) {
 		item.files = build.build[key];
 	} else {
 		item = build.build[key]
