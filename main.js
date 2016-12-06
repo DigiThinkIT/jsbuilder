@@ -240,7 +240,7 @@ class Builder {
       	var base_path = path.dirname(out_path);
     	  fs.ensureDirSync(base_path);
         fs.writeFileSync(out_path, out);
-	
+
       }
     }
   }
@@ -258,7 +258,7 @@ Builder.registerHandler("include_template", {
   process: function(data, name, vars, src_path, dst_path, builder) {
     var out = "";
     if ( this.count == 0 ) {
-      out = "var templates = {};\n\n";
+      out = "if ( templates === undefined ) var templates = {};\n\n";
     }
 
     var tpl = new Template(data);
