@@ -21,6 +21,7 @@ class Template {
     script.push("(function(__data__) { var __fn__ = (function() {\n");
     //    script.push("\twith(__data__) {");
     script.push("\tvar tpl=[];\n");
+    script.push("\tfunction cast(value, type) { return (value.constructor === type)?value:new type(value); }\n");
     var open = false;
     var openMode = null;
     for (var p of parts) {
